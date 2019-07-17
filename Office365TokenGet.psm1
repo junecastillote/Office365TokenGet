@@ -8,19 +8,19 @@ Function New-MSGraphAPIToken {
     If you have a registered app in Azure AD, this function can help you get the authentication token
     from the MS Graph API endpoint. Each token is valid for 60 minutes.
     
-    .PARAMETER appID
-    This is the registered appID in AzureAD
+    .PARAMETER ClientID
+    This is the registered ClientID in AzureAD
     
-    .PARAMETER appKey
+    .PARAMETER ClientSecret
     This is the key of the registered app in AzureAD
     
-    .PARAMETER domain
+    .PARAMETER TenantID
     This is your Office 365 Tenant Domain
     
     .EXAMPLE
-    $graphToken = New-MSGraphAPIToken -appID <appID> -appKey <appKey> -domain <tenant domain>
+    $graphToken = New-MSGraphAPIToken -ClientID <ClientID> -ClientSecret <ClientSecret> -TenantID <TenantID>
 
-    The above example gets a new token using the appID, appKey and tenant domain combination
+    The above example gets a new token using the ClientID, ClientSecret and TenantID combination
     
     .NOTES
     General notes
@@ -28,15 +28,15 @@ Function New-MSGraphAPIToken {
     
     param(
     [parameter(mandatory=$true)]
-    [string]$appID,
+    [string]$ClientID,
     [parameter(mandatory=$true)]
-    [string]$appKey,
+    [string]$ClientSecret,
     [parameter(mandatory=$true)]
-    [string]$domain
+    [string]$TenantID
     )
     
-    $body = @{grant_type="client_credentials";scope="https://graph.microsoft.com/.default";client_id=$appID;client_secret=$appKey}
-    $oauth = Invoke-RestMethod -Method Post -Uri https://login.microsoftonline.com/$domain/oauth2/v2.0/token -Body $body
+    $body = @{grant_type="client_credentials";scope="https://graph.microsoft.com/.default";client_id=$ClientID;client_secret=$ClientSecret}
+    $oauth = Invoke-RestMethod -Method Post -Uri https://login.microsoftonline.com/$TenantID/oauth2/v2.0/token -Body $body
     $token = @{'Authorization'="$($oauth.token_type) $($oauth.access_token)"}    
     Return $token
 }
@@ -50,34 +50,34 @@ Function New-OutlookRestAPIToken {
     If you have a registered app in Azure AD, this function can help you get the authentication token
     from the Outlook REST API endpoint. Each token is valid for 60 minutes.
     
-    .PARAMETER appID
-    This is the registered appID in AzureAD
+    .PARAMETER ClientID
+    This is the registered ClientID in AzureAD
     
-    .PARAMETER appKey
+    .PARAMETER ClientSecret
     This is the key of the registered app in AzureAD
     
-    .PARAMETER domain
-    This is your Office 365 Tenant Domain
+    .PARAMETER TenantID
+    This is your Office 365 TenantID
     
     .EXAMPLE
-    $graphToken = New-OutlookRestAPIToken -appID <appID> -appKey <appKey> -domain <tenant domain>
+    $graphToken = New-OutlookRestAPIToken -ClientID <ClientID> -ClientSecret <ClientSecret> -TenantID <TenantID>
 
-    The above example gets a new token using the appID, appKey and tenant domain combination
+    The above example gets a new token using the ClientID, ClientSecret and TenantID combination
     
     .NOTES
     General notes
     #>
     param(
     [parameter(mandatory=$true)]
-    [string]$appID,
+    [string]$ClientID,
     [parameter(mandatory=$true)]
-    [string]$appKey,
+    [string]$ClientSecret,
     [parameter(mandatory=$true)]
-    [string]$domain
+    [string]$TenantID
     )
     
-    $body = @{grant_type="client_credentials";scope="https://outlook.office.com/.default";client_id=$appID;client_secret=$appKey}
-    $oauth = Invoke-RestMethod -Method Post -Uri https://login.microsoftonline.com/$domain/oauth2/v2.0/token -Body $body
-    $token = @{'Authorization'="$($oauth.token_type) $($oauth.access_token)"}    
+    $body = @{grant_type="client_credentials";scope="https://outlook.office.com/.default";client_id=$ClientID;client_secret=$ClientSecret}
+    $oauth = Invoke-RestMethod -Method Post -Uri https://login.microsoftonline.com/$TenantID/oauth2/v2.0/token -Body $body
+    $token = @{'Authorization'="$($oauth.token_type) $($oauth.access_token)"}
     Return $token
 }
